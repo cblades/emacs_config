@@ -23,18 +23,23 @@
 ;;  ;; If there is more than one, they won't work right.
 ;; )
 
-(use-package company :ensure t)
-(use-package helm :ensure t)
-(use-package impatient-mode :ensure t)
-(use-package yasnippet :ensure t)
+(use-package company :ensure t)  ;; completion in-window
+(use-package helm :ensure t)  ;; completion for emacs commands and contexts 
+;; (use-package impatient-mode :ensure t)  ;; live hot reloading for html
+(use-package yasnippet :ensure t)  ;; snippet engine used iwht company for code completion
+(use-package catppuccin-theme :ensure t)  ;; theme
+
 
 ;; top-level packages config
+
+;; company
 (add-hook 'after-init-hook 'global-company-mode) ;; after-init, globally enable company mode
+
 ;; helm
 (helm-mode 1)
 (global-set-key (kbd "M-x") 'helm-M-x)
-;; configure company mode and yasnippet (for completion)
 
+;; eglot
 (add-hook 'eglot-managed-mode-hook (lambda ()
 
 (add-to-list 'company-backends
@@ -47,15 +52,30 @@
 (add-to-list 'eglot-server-programs
   `((python-ts-mode python-mode) . ("pyrefly" "lsp")))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages nil))
+
+;; theme
+(load-theme 'catppuccin :no-confirm)
+(setq catppuccin-flavor 'frappe) ;; theme variant
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages nil))
+ '(auto-save-file-name-transforms
+   '((".*" "~/.emacs.d/autosaves/" t)))
+ '(backup-directory-alist
+   '((".*" . "~/.emacs.d/backups/"))))
+
+;; create the autosave and backups dir if necessary, since emacs won't.
+(make-directory "~/.emacs.d/autosaves/" t)
+(make-directory "~/.emacs.d/backups/" t)
